@@ -1,0 +1,94 @@
+{% extends 'audio_profiling/base.html' %}
+{% load i18n %}
+{% block css_files %}
+{% load staticfiles %}
+<link rel="stylesheet" href="{% static 'musicfile_details.css' %}">
+{% endblock %}
+{% block content %}
+
+
+<!--<div class="chart">-->
+<div class="row">
+    <div class="col-md-9 col-lg-9 col-xs-12 ">
+        <div class="row">
+            <div id="description" class="col-md-12">
+                <section id="title">
+                    <h2 class="page-header">{{object.audio_page.name}}</h2>
+                    {% if object.audio_page.description%}
+                    <h2 class="page-header">
+                        {{object.audio_page.description|linebreaks}}
+                    </h2>
+                    {% endif %}
+                </section>
+            </div> <!-- column -->
+            {% if object.audio_page.photo %}
+            <div class="row  visible-xs visible-sm hidden-md hidden-lg" style="margin-left: 0px;margin-right:0px;"> <!-- negative margins were stacking -->
+                <div class="col-md-3 col-lg-3 col-xs-12 visible-xs visible-sm hidden-md hidden-lg " >
+                    <img class='img-responsive' style="padding-bottom:5px; height: 200px !important;" id="violin-photo2" src="{{object.audio_page.photo.url}}" alt="creating spectogram, please refresh"  />
+                </div> <!-- column -->
+            </div>
+            {% endif %}
+        </div>
+        <div class="row"> <!--spectrum -->
+            <div class="col-md-12 ">
+                <div id="spectrum_chart">
+                     <h4>{% trans "Instantaneous frequency spectrum of the sound (at the end-averaged)" %}</h4>
+                    <canvas id="canvas" style="z-index:100" width="547" height="250px" style="display: block;  border:0px solid #000000;"></canvas>
+                </div>
+            </div><!--column-->
+        </div>
+    </div>
+    {% if object.audio_page.photo %}
+    <div class="col-md-3 col-lg-3 col-xs-12 hidden-xs hidden-sm">
+        <img class='img-responsive' style="padding-bottom:5px" id="violin-photo" src="{{object.audio_page.photo.url}}"/>
+    </div> <!-- column -->
+    {% endif %}
+</div>
+
+<div class="row" >
+    <div id="audio_player"></div>
+</div>
+<h4>{% trans "Changes of sound amplitude in time" %}</h4>
+<div class="row" id="waveform-row">
+    <div class="insideWrapper">
+        <div id="waveform"></div>
+        <canvas class="coveringCanvas" id="waveform-legend" style="z-index: 100;border-right-width: 0px;"></canvas>
+    </div>
+
+    <div id="waveform-timeline"></div>
+</div>
+<h4>{% trans "Aggregate image of frequency spectrum changes in time" %}</h4>
+<div class="row">
+    <div class="insideWrapper">
+        <img src="{{object.spectrogram_url|default_if_none:""}}" class="coveredImage img-responsive" id="spectogram" alt="creating spectrogram, please refresh the page">
+        <canvas class="coveringCanvas" id="spectogramTimeStamp"></canvas>
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% block js_files %}
+<script src="{% static 'node_modules/enquire.js/dist/enquire.js' %}"></script>
+<script src="{% static 'node_modules/wavesurfer.js/dist/wavesurfer.min.js' %}"></script>
+<script src="{% static 'node_modules/wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js' %}"></script>
+<script>
+    //TODO do not use global variables
+    var LEFT_IMG_MARGIN=parseFloat("{{object.LEFT_IMG_MARGIN}}");
+    var RIGHT_IMG_MARGIN=parseFloat("{{object.RIGHT_IMG_MARGIN}}");
+    var TOP_IMG_MARGIN=parseFloat("{{object.TOP_IMG_MARGIN}}");
+    var BOTTOM_IMG_MARGIN=parseFloat("{{object.BOTTOM_IMG_MARGIN}}");
+
+    var WAVEFORM_LINK="{{object.waveform_url|default_if_none:""}}";
+    var SPECTRUM_LINK="{{object.spectrum_url|default_if_none:""}}";
+
+    var WAV_AUDIO_LINK="{{object.audio_file.url}}";
+    var MP3_AUDIO_LINK="{{object.mp3_url|default_if_none:""}}";
+
+    var SPECTRUM_FFT_SIZE={{SPECTRUM_FFT_SIZE}};
+    var SPECTROGRAM_IMAGE_WIDTH={{SPECTROGRAM_WIDTH}};
+    var SPECTROGRAM_IMAGE_HEIGHT={{SPECTROGRAM_HEIGHT}};
+
+</script>
+<script src="{% static 'musicfile_details.js' %}"></script>
+{% endblock %}

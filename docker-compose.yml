@@ -1,0 +1,26 @@
+version: '2'
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    container_name: nginx01
+    ports:
+      - "8888:8000"
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - /opt/audio-gallery/static:/opt/audio-gallery/static
+      - /opt/audio-gallery/media:/opt/audio-gallery/media
+    depends_on:
+      - web
+  web:
+    restart: always
+    build: .
+    container_name: django01
+    env_file: .django_env
+    volumes:
+      - /opt/audio-gallery/static:/opt/audio-gallery/static
+      - /opt/audio-gallery/media:/opt/audio-gallery/media
+      - /opt/audio-gallery/database:/opt/audio-gallery/database
+      - /opt/audio-gallery/logs:/opt/audio-gallery/logs
+    expose:
+      - "8000"

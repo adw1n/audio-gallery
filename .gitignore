@@ -1,0 +1,5 @@
+.idea
+__pycache__
+.pyc
+audio_gallery/secret_key.py
+audio_profiling/static/node_modules

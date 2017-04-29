@@ -1,0 +1,17 @@
+# Please modify the password. Otherwise everyone who visits the project github page will be able to log in to your app.
+ADMIN_USER_PASSWORD=admin1234
+
+# set ADMIN_MAIL if you want to get notified when the app stops working correctly
+#ADMIN_MAIL=your_mail@example123456789.com
+
+#ALLOWED_HOSTS sytax: ALLOWED_HOSTS=your_domain.com:another_domain2.com:audio.some_domain.com
+ALLOWED_HOSTS=*
+
+
+# You shouldn't need to modify the settings below.
+CREATE_ADMIN_USER=true
+DJANGO_DEBUG=false
+STATIC_ROOT=/opt/audio-gallery/static
+MEDIA_ROOT=/opt/audio-gallery/media
+DJANGO_LOGS_DIR=/opt/audio-gallery/logs
+DJANGO_DATABASE_DIR=/opt/audio-gallery/database
