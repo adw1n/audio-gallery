@@ -5,6 +5,9 @@ import math
 import operator
 from contextlib import contextmanager
 
+import matplotlib #http://stackoverflow.com/questions/2801882/generating-a-png-with-matplotlib-when-display-is-undefined
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use("Agg")
 import numpy
 import pylab
 from django.test import TestCase
@@ -85,6 +88,7 @@ class AudioFileTasksTests(TestCase):
                                              waveform_path),
             shell=True)
 
+    @unittest.mock.patch('builtins.open',unittest.mock.mock_open())
     @unittest.mock.patch('json.dump')
     @unittest.mock.patch('scipy.io.wavfile.read')
     def test_create_spectrum(self, scipy_io_wavfile_read_mock: unittest.mock.MagicMock,

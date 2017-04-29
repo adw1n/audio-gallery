@@ -11,6 +11,8 @@ import contextlib
 
 from celery import shared_task
 import matplotlib.figure
+#http://stackoverflow.com/questions/2801882/generating-a-png-with-matplotlib-when-display-is-undefined
+# Force matplotlib to not use any Xwindows backend.
 matplotlib.use("Agg")
 import scipy.io.wavfile
 import scipy.signal
