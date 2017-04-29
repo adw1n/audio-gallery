@@ -74,7 +74,7 @@ def get_wav_info(wav_file: str) -> typing.Tuple[numpy.ndarray, int]:
 
 
 @shared_task
-def create_waveform(music_file_pk: int):
+def create_waveform(music_file_pk: int) -> None:
     logger.info("creating waveform")
     music_file = AudioFile.objects.get(pk=music_file_pk)
     waveform_path = os.path.join(music_file.waveform_upload_path, music_file._get_waveform_name())
@@ -93,7 +93,7 @@ def create_waveform(music_file_pk: int):
 
 
 @shared_task
-def create_mp3(music_file_pk: int):
+def create_mp3(music_file_pk: int) -> None:
     logger.info("creating mp3")
     music_file = AudioFile.objects.get(pk=music_file_pk)
     mp3_path = os.path.join(settings.MEDIA_ROOT, music_file._get_mp3_name())
@@ -111,7 +111,7 @@ def create_mp3(music_file_pk: int):
 
 
 @shared_task
-def create_spectrum(music_file_pk: int):
+def create_spectrum(music_file_pk: int) -> None:
     logger.info("creating spectrum")
     music_file = AudioFile.objects.get(pk=music_file_pk)
     sampFreq, snd = scipy.io.wavfile.read(music_file.audio_file)
@@ -156,7 +156,7 @@ MY_DPI = 100  # type: int
 
 
 @shared_task
-def create_spectrogram(music_file_pk: int):
+def create_spectrogram(music_file_pk: int) -> None:
     logger.info("creating spectrogram")
     music_file = AudioFile.objects.get(pk=music_file_pk)
     sound_info, frame_rate = get_wav_info(music_file.audio_file)

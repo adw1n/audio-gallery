@@ -48,13 +48,13 @@ class AudioFile(models.Model):
         '''
         return os.path.splitext(os.path.basename(self.audio_file.path))[0]
 
-    def _get_spectrum_name(self):
+    def _get_spectrum_name(self) -> str:
         return self.audio_file_name + "_spectrum.json"
-    def _get_waveform_name(self):
+    def _get_waveform_name(self) -> str:
         return self.audio_file_name + "_waveform.json"
-    def _get_spectrogram_name(self):
+    def _get_spectrogram_name(self) -> str:
         return self.audio_file_name + "_spectrogram.png"
-    def _get_mp3_name(self)->str:
+    def _get_mp3_name(self) -> str:
         return os.path.splitext(self.audio_file.name)[0] + ".mp3"
 
     @property
@@ -78,7 +78,7 @@ class AudioFile(models.Model):
         # TODO finish this
         pass
 
-    def create_files(self):
+    def create_files(self) -> None:
         from .tasks import create_waveform, create_mp3, create_spectrogram, create_spectrum
         create_spectrogram.delay(self.pk)
         create_waveform.delay(self.pk)

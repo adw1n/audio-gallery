@@ -1,6 +1,9 @@
 import os
+import typing
 import distutils.util
+
 from django.utils.translation import ugettext_lazy as _
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -50,11 +53,11 @@ except ImportError:
     # I can't seem to be able to catch the exception ImproperlyConfigured - TODO check why
 
 try:
-    DEBUG = os.environ['DJANGO_DEBUG']
+    __debug_env_var = os.environ['DJANGO_DEBUG']
 except KeyError:
     DEBUG = True
 else:
-    DEBUG = bool(distutils.util.strtobool(DEBUG))
+    DEBUG = bool(distutils.util.strtobool(__debug_env_var))
 
 ALLOWED_HOSTS = ['*']
 

@@ -1,5 +1,6 @@
 import unittest.mock
 
+import typing
 import django.test
 import django.views.generic
 from django.core.urlresolvers import reverse
@@ -8,6 +9,8 @@ from .. import models
 from .. import views
 
 
+# mypy can't handle static function variables
+@typing.no_type_check
 def get_dummy_audio_file(category: models.Category, instrument: models.AudioPage) -> models.AudioFile:
     get_dummy_audio_file.counter += 1
     return models.AudioFile.objects.create(
