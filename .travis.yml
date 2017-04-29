@@ -7,9 +7,13 @@ before_install:
   - mkdir -p logs
   - sudo apt-get update -q
   - sudo apt-get install python3-tk
+  - npm install --prefix audio_profiling/static/ chroma-js@1.2.2 enquire.js@2.1.5 wavesurfer.js@1.1.1 admin-lte@2.3.11 \
+                                                 sinon@2.1.0 qunit-phantomjs-runner@2.3.0 underscore@1.8.3
 install:
   - pip install -r requirements.txt
   - pip install mypy
 script:
   - python manage.py test
   - mypy --config-file mypy.ini .
+  - QT_QPA_PLATFORM=offscreen phantomjs audio_profiling/static/node_modules/qunit-phantomjs-runner/runner.js \
+                                        audio_profiling/static/test.html
