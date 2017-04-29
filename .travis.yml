@@ -1,0 +1,13 @@
+language: python
+python:
+  - 3.5
+env:
+  - DJANGO_LOGS_DIR=.
+before_install:
+  - mkdir -p logs
+  - sudo apt-get update -q
+  - sudo apt-get install python3-tk
+install:
+  - pip install -r requirements.txt
+script:
+  - python manage.py test
