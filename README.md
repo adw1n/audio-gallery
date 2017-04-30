@@ -1,11 +1,11 @@
 [![Build Status](https://travis-ci.org/adw1n/audio-gallery.svg?branch=master)](https://travis-ci.org/adw1n/audio-gallery)
 
-##Live demo:  
+### Live demo:  
 [http://violin-competition.adw1n.com/](http://violin-competition.adw1n.com/)  
 The demo is running a slightly older version of this project.
 
 
-###About
+### About
 As of right now you can only upload audio files that are:
 * in a WAV file format
 * mono
@@ -13,7 +13,7 @@ As of right now you can only upload audio files that are:
 
 Support for mp3 file format and arbitrary sampling frequency might be added in the future. As far as multiple channels go, I doubt it.
 
-###DEPLOYMENT:
+### DEPLOYMENT:
 You need to have `docker` and `docker-compose` installed. After you have installed them, run these commands:
 ```bash
 sudo mkdir -p /opt/audio-gallery/logs /opt/audio-gallery/static /opt/audio-gallery/media /opt/audio-gallery/database
@@ -29,7 +29,7 @@ sudo docker-compose up -d
 # password: password that you have just set
 ```
 
-###Customization / configuration
+### Customization / configuration
 * (**required**) **admin user password** - you **have to modify** this setting for **security reasons**  
   please change `ADMIN_USER_PASSWORD` in [.django_env](.django_env) file to whatever you like
 * (optional/recommended) `ALLOWED_HOSTS` setting in [.django_env](.django_env) file  
@@ -47,13 +47,13 @@ sudo docker-compose up -d
   
   To remove support for polish language just remove if from `LANGUAGES` variable in [settings.py](audio_gallery/settings.py).
 
-###Backups
+### Backups
 TODO document this. For now just copy `/opt/audio-gallery/media` and `/opt/audio-gallery/database` directories and put it in a single tar/zip archive for each backup.
 
-###For developers:
+### For developers:
 * project is using Django 1.10 until [django-modeltranslation](https://github.com/deschler/django-modeltranslation) starts to support Django 1.11
 * project is using python 3.5 until support for python 3.6 is added to [celery](https://github.com/celery/celery) and [django-modeltranslation](https://github.com/deschler/django-modeltranslation)
 
-###License:
+### License:
 I'll add an open source license to this project soon (once I pick one...).  
 **BUT** all the music, graphics (logos) etc. on the [demo page](http://violin-competition.adw1n.com/) are a **property of the rightful owners**.
