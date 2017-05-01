@@ -13,8 +13,16 @@ As of right now you can only upload audio files that are:
 
 Support for mp3 file format and arbitrary sampling frequency might be added in the future. As far as multiple channels go, I doubt it.
 
+### Browser support
+Full support:
+* desktop: firefox, chrome, opera, chromium
+* mobile: chrome
+
+Partial support - everything works, but the instantaneous spectrum is not refreshed during the audio play (instead the spectrum for the whole audio file is taken):
+* the rest of the browsers
+
 ### DEPLOYMENT:
-You need to have `docker` and `docker-compose` installed. After you have installed them, run these commands:
+You need to have `docker` and `docker-compose` installed. After you have installed them, run those commands:
 ```bash
 sudo mkdir -p /opt/audio-gallery/logs /opt/audio-gallery/static /opt/audio-gallery/media /opt/audio-gallery/database
 git clone https://github.com/adw1n/audio-gallery
@@ -33,7 +41,7 @@ sudo docker-compose up -d
 * (**required**) **admin user password** - you **have to modify** this setting for **security reasons**  
   please change `ADMIN_USER_PASSWORD` in [.django_env](.django_env) file to whatever you like
 * (optional/recommended) `ALLOWED_HOSTS` setting in [.django_env](.django_env) file  
-  TODO this setting as of right now does nothing - change it in [settings.py](audio_gallery/settings.py) instead.
+* (optional) `ADMIN_MAIL` setting in [.django_env](.django_env) file
 * (optional) logos - place two JPGs in [audio_profiling/static/logos/](audio_profiling/static/logos/):
     * logo_small.jpg 50x50px
     * logo.jpg 122x50px
@@ -56,4 +64,4 @@ TODO document this. For now just copy `/opt/audio-gallery/media` and `/opt/audio
 
 ### License:
 I'll add an open source license to this project soon (once I pick one...).  
-**BUT** all the music, graphics (logos) etc. on the [demo page](http://violin-competition.adw1n.com/) are a **property of the rightful owners**.
+**BUT** all the music, graphics (logos, violin photos) etc. on the [demo page](http://violin-competition.adw1n.com/) are a **property of the rightful owners**.
