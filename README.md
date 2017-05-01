@@ -32,9 +32,9 @@ sudo docker-compose build  # this might take about 4 minutes
 sudo docker-compose up -d
 # open your browser and go to http://SERVER_IP:8888
 # go to the admin panel http://SERVER_IP:8888/admin to set things up
-# and log in with using credentials:
+# and log in using credentials:
 # user: admin
-# password: password that you have just set
+# password: password that you have just set in the .django_env file
 ```
 
 ### Customization / configuration
