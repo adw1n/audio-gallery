@@ -59,7 +59,15 @@ except KeyError:
 else:
     DEBUG = bool(distutils.util.strtobool(__debug_env_var))
 
-ALLOWED_HOSTS = ['*']
+try:
+    ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(':')
+except KeyError:
+    ALLOWED_HOSTS = ['*']
+
+try:
+    ADMINS = [('admin', os.environ["ADMINS"])]
+except KeyError:
+    pass
 
 INSTALLED_APPS = (
     'modeltranslation',
