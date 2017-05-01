@@ -63,5 +63,5 @@ TODO document this. For now just copy `/opt/audio-gallery/media` and `/opt/audio
 * project is using python 3.5 until support for python 3.6 is added to [celery](https://github.com/celery/celery) and [django-modeltranslation](https://github.com/deschler/django-modeltranslation)
 
 ### License:
-I'll add an open source license to this project soon (once I pick one...).  
+This project uses the Unlicense license (see [LICENSE](LICENSE) file).  
 **BUT** all the music, graphics (logos, violin photos) etc. on the [demo page](http://violin-competition.adw1n.com/) are a **property of the rightful owners**.
