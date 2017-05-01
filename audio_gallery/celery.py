@@ -16,5 +16,5 @@ app.autodiscover_tasks()
 
 @celery.signals.setup_logging.connect
 def task_setup_logging(**kwargs):
-    logger=logging.getLogger("celery")
+    logger = logging.getLogger("celery")
     return logger

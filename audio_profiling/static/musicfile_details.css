@@ -1,6 +1,6 @@
 /*
     insideWrapper, coveredImage, coveringCanvas are used to overlay progress bar on waveform and spectrogram
-    the author of this css is: http://stackoverflow.com/questions/14824747/overlay-html5-canvas-over-image/14843923#14843923 http://jsfiddle.net/m1erickson/g3sTL/
+    the author of this css is: http://stackoverflow.com/questions/14824747/overlay-html5-canvas-over-image/14843923#14843923
 */
 .insideWrapper{
     width:100%;

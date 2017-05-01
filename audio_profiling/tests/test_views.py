@@ -9,7 +9,7 @@ from .. import models
 from .. import views
 
 
-# mypy can't handle static function variables
+# mypy can't handle static function variables (or I don't know how to set it up to work)
 @typing.no_type_check
 def get_dummy_audio_file(category: models.Category, instrument: models.AudioPage) -> models.AudioFile:
     get_dummy_audio_file.counter += 1

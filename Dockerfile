@@ -13,6 +13,9 @@ RUN groupadd -r ${APP_USER} \
     -g ${APP_USER} ${APP_USER}
 
 ARG DEBIAN_FRONTEND=noninteractive
+
+# this way of installing packages is not ideal (generates more layers)
+# but for now the flexibilty and readibility is more important for me
 RUN apt-get update
 #to avoid warning "debconf: delaying package configuration, since apt-utils is not installed":
 #see https://github.com/phusion/baseimage-docker/issues/319 for details
@@ -69,12 +72,12 @@ RUN yarn add enquire.js@2.1.5
 RUN yarn add wavesurfer.js@1.1.1
 RUN yarn add admin-lte@2.3.11
 
-# copy app source code to the container - I could use a volume, but becuase I am doing some sed-ing I'd rather
-# copy the source code for now
+# TODO use volume instead
+# copying the source code made sense back when I was doing some wierd sed-ing
 ADD . ${APP_ROOT}/${APP_NAME}/source/
-#so after adding all files belong to the root, the USER ... setting has been ignored
-#see https://github.com/docker/docker/issues/6119
-#hence I need to chmod - this sucks
+# so after adding all files belong to the root, the USER ... setting has been ignored
+# see https://github.com/docker/docker/issues/6119
+# hence I need to chmod - this sucks
 USER root
 RUN chown ${APP_USER}:${APP_USER} -R ${APP_ROOT}/${APP_NAME}/source/
 
