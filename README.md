@@ -47,7 +47,7 @@ sudo docker-compose up -d
     * logo.jpg 122x50px
     * depending on your logos' background you might want to change css property of logo's background-color in [logo_settings.css](audio_profiling/static/logo_settings.css) file
 * (optional) internalization  
-  As of right now the projects supports two languages:
+  As of right now the project supports two languages:
     * english
     * polish
 
