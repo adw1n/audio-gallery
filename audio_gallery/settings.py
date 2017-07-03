@@ -1,5 +1,4 @@
 import os
-import typing
 import distutils.util
 
 from django.utils.translation import ugettext_lazy as _

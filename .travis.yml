@@ -11,9 +11,10 @@ before_install:
                                                  sinon@2.1.0 qunit-phantomjs-runner@2.3.0 underscore@1.8.3
 install:
   - pip install -r requirements.txt
-  - pip install mypy
+  - pip install mypy pyflakes
 script:
   - python manage.py test
+  - pyflakes .
   - mypy --config-file mypy.ini .
   - QT_QPA_PLATFORM=offscreen phantomjs audio_profiling/static/node_modules/qunit-phantomjs-runner/runner.js
                                         audio_profiling/static/test.html
