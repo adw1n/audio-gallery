@@ -116,7 +116,7 @@ WSGI_APPLICATION = 'audio_gallery.wsgi.application'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'LOCATION': os.environ.get('MEMCACHED_HOST', '127.0.0.1')+':11211',
     }
 }
 

@@ -38,7 +38,6 @@ RUN apt-get install -y python3-tk
 RUN apt-get install -y gettext
 #for celery
 RUN apt-get install -y rabbitmq-server
-RUN apt-get install -y memcached
 
 #so basically npm is compleatly broken when using inside docker - see bug: https://github.com/npm/npm/issues/9863
 #therefore we go with yarn - install steps from https://yarnpkg.com/lang/en/docs/install/

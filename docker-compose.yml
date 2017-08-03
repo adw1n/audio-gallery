@@ -12,6 +12,12 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=postgres
       - POSTGRES_DB=audiogallery
+  memcached:
+    restart: always
+    image: memcached:latest
+    container_name: audiogallery_memcached
+    ports:
+      - "127.0.0.1:11211:11211"
   nginx:
     image: nginx:latest
     restart: always
@@ -39,7 +45,9 @@ services:
       - "8000"
     depends_on:
       - db
+      - memcached
     environment:
       - DB_PASSWORD=password
       - DB_USER=postgres
       - DB_HOST=db
+      - MEMCACHED_HOST=memcached
