@@ -1,8 +1,11 @@
 language: python
+services:
+- postgresql
 python:
   - 3.5
 env:
   - DJANGO_LOGS_DIR=.
+  - DB_PASSWORD=
 before_install:
   - mkdir -p logs
   - sudo apt-get update -q
