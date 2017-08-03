@@ -33,7 +33,7 @@ logger = celery.utils.log.get_task_logger(__name__)
 
 LOCK_EXPIRE = 60  # Lock expires in 1 minute
 @contextlib.contextmanager
-def memcache_lock(lock_id):
+def memcache_lock(lock_id: str):
     """
     source code of this function has been taken from:
     http://docs.celeryproject.org/en/latest/tutorials/task-cookbook.html#ensuring-a-task-is-only-executed-one-at-a-time

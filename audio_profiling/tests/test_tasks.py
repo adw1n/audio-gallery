@@ -19,7 +19,7 @@ from .. import conf
 
 
 @contextmanager
-def mock_generator(_):
+def mock_generator(lock_id: str):
     yield True
 tasks.memcache_lock = mock_generator
 
