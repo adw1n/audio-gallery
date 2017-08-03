@@ -36,8 +36,6 @@ RUN apt-get install -y python3-tk
 #gettext for django-admin compilemessages
 #otherwise this error is thrown: CommandError: Can't find msgfmt. Make sure you have GNU gettext tools 0.15 or newer installed.
 RUN apt-get install -y gettext
-#for celery
-RUN apt-get install -y rabbitmq-server
 
 #so basically npm is compleatly broken when using inside docker - see bug: https://github.com/npm/npm/issues/9863
 #therefore we go with yarn - install steps from https://yarnpkg.com/lang/en/docs/install/

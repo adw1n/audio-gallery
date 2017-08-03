@@ -120,6 +120,13 @@ CACHES = {
     }
 }
 
+# RabbitMQ
+CELERY_BROKER_URL = 'amqp://{0}:{1}@{2}:5672//'.format(
+    os.environ.get('RABBIT_USER', 'guest'),
+    os.environ.get('RABBIT_PASSWORD', 'guest'),
+    os.environ.get('RABBIT_HOST', '127.0.0.1'))
+
+
 DATABASE_DIR=os.environ.get('DJANGO_DATABASE_DIR', os.path.join(BASE_DIR, '../database/'))
 DATABASES = {
     'default': {

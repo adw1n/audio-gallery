@@ -29,11 +29,10 @@ if [ "$CREATE_ADMIN_USER" = true ] ; then \
 fi
 
 
-service rabbitmq-server start
 cd $APP_NAME/source
 python3 manage.py collectstatic --noinput
-su -s /bin/bash -c "celery purge -f" $APP_USER
-su -s /bin/bash -c "celery -A audio_gallery worker -l info --logfile $DJANGO_LOGS_DIR/celery.log --pidfile /tmp/celery.pid \
+su -s /bin/bash -c "celery -A audio_gallery purge -f" $APP_USER
+su -s /bin/bash -c "celery -A audio_gallery worker -l info --logfile $DJANGO_LOGS_DIR/celery.log \
    &> /dev/null &" $APP_USER
 su -s /bin/bash -c "gunicorn audio_gallery.wsgi:application --name audio_gallery \
   --bind 0.0.0.0:8000 --access-logfile $DJANGO_LOGS_DIR/access.log --error-logfile $DJANGO_LOGS_DIR/error.log" $APP_USER

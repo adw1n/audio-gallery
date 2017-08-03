@@ -18,6 +18,14 @@ services:
     container_name: audiogallery_memcached
     ports:
       - "127.0.0.1:11211:11211"
+  rabbit:
+    restart: always
+    image: rabbitmq:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+    ports:
+      - "127.0.0.1:5672:5672"
   nginx:
     image: nginx:latest
     restart: always
@@ -46,8 +54,12 @@ services:
     depends_on:
       - db
       - memcached
+      - rabbit
     environment:
       - DB_PASSWORD=password
       - DB_USER=postgres
       - DB_HOST=db
       - MEMCACHED_HOST=memcached
+      - RABBIT_HOST=rabbit
+      - RABBIT_USER=admin
+      - RABBIT_PASSWORD=password
