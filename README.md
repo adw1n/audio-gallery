@@ -24,7 +24,7 @@ Partial support - everything works, but the instantaneous spectrum is not refres
 ### DEPLOYMENT:
 You need to have `docker` and `docker-compose` installed. After you have installed them, run those commands:
 ```bash
-sudo mkdir -p /opt/audio-gallery/logs /opt/audio-gallery/static /opt/audio-gallery/media /opt/audio-gallery/database
+sudo mkdir -p /opt/audio-gallery/logs /opt/audio-gallery/static /opt/audio-gallery/media /opt/audio-gallery/pgdata
 git clone https://github.com/adw1n/audio-gallery
 cd audio-gallery
 # modify password (ADMIN_USER_PASSWORD) for your admin account in .django_env
@@ -56,7 +56,7 @@ sudo docker-compose up -d
   To remove support for polish language just remove if from `LANGUAGES` variable in [settings.py](audio_gallery/settings.py).
 
 ### Backups
-TODO document this. For now just copy `/opt/audio-gallery/media` and `/opt/audio-gallery/database` directories and put it in a single tar/zip archive for each backup.
+TODO document this. For now just copy `/opt/audio-gallery/media` and `/opt/audio-gallery/pgdata` directories and put it in a single tar/zip archive for each backup.
 
 ### For developers:
 * project is using Django 1.10 until [django-modeltranslation](https://github.com/deschler/django-modeltranslation) starts to support Django 1.11

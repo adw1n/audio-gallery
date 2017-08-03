@@ -1,5 +1,17 @@
 version: '2'
 services:
+  db:
+    restart: always
+    image: postgres:latest
+    container_name: audiogallery_postgres
+    ports:
+     - "127.0.0.1:5432:5432"
+    volumes:
+      - '/opt/audio-gallery/pgdata:/var/lib/postgresql/data/'
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=audiogallery
   nginx:
     image: nginx:latest
     restart: always
@@ -22,5 +34,12 @@ services:
       - /opt/audio-gallery/media:/opt/audio-gallery/media
       - /opt/audio-gallery/database:/opt/audio-gallery/database
       - /opt/audio-gallery/logs:/opt/audio-gallery/logs
+      - .:/src/audio-gallery/source
     expose:
       - "8000"
+    depends_on:
+      - db
+    environment:
+      - DB_PASSWORD=password
+      - DB_USER=postgres
+      - DB_HOST=db

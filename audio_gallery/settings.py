@@ -123,8 +123,12 @@ CACHES = {
 DATABASE_DIR=os.environ.get('DJANGO_DATABASE_DIR', os.path.join(BASE_DIR, '../database/'))
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(DATABASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'audiogallery',
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'password'),
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+        'PORT': '5432',
     }
 }
 

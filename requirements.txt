@@ -7,3 +7,4 @@ matplotlib==2.0.0
 celery==4.0.2
 python-memcached==1.58
 django-modeltranslation==0.12.1
+psycopg2==2.7.3
