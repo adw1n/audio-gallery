@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+chown ${APP_USER}:${APP_USER} -R ${APP_ROOT}/${APP_NAME}/source/
+
+su -s /bin/bash -c "if [ -d \"$APP_ROOT/node_modules\" ]; then \
+    mv $APP_ROOT/node_modules $APP_ROOT/$APP_NAME/source/audio_profiling/static; \
+fi" $APP_USER
+
 chown -R $APP_USER:$APP_USER /opt/audio-gallery/media
 su -s /bin/bash -c "mkdir -p /opt/audio-gallery/media/files /opt/audio-gallery/media/spectrum" $APP_USER
 su -s /bin/bash -c "mkdir -p /opt/audio-gallery/media/spectrograms  /opt/audio-gallery/media/waveforms" $APP_USER
@@ -8,6 +14,12 @@ chown -R $APP_USER:$APP_USER /opt/audio-gallery/database
 
 su -s /bin/bash -c "python3 $APP_NAME/source/manage.py makemigrations" $APP_USER
 su -s /bin/bash -c "python3 $APP_NAME/source/manage.py migrate" $APP_USER
+
+
+cd $APP_ROOT/$APP_NAME/source
+su -s /bin/bash -c "django-admin compilemessages" $APP_USER
+cd $APP_ROOT
+
 
 if [ "$CREATE_ADMIN_USER" = true ] ; then \
     su -s /bin/bash -c "echo \"from django.contrib.auth.models import User; \

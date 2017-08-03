@@ -58,34 +58,18 @@ RUN ln -s ${APP_ROOT}/waveform/waveform /usr/local/bin/waveform
 
 #install required python packages
 USER ${APP_USER}
-RUN mkdir -p ${APP_ROOT}/${APP_NAME}/source
 COPY requirements.txt ${APP_ROOT}/
 USER root
 RUN pip3 install -r ${APP_ROOT}/requirements.txt
-USER ${APP_USER}
 RUN rm ${APP_ROOT}/requirements.txt
 
 WORKDIR ${APP_ROOT}
+# TODO add package.json and install from it
 RUN yarn add chroma-js@1.2.2
 RUN yarn add enquire.js@2.1.5
 #wavesurfer 1.3.7 (newest version) is bugged - issue: https://github.com/katspaugh/wavesurfer.js/issues/1055
 RUN yarn add wavesurfer.js@1.1.1
 RUN yarn add admin-lte@2.3.11
-
-# TODO use volume instead
-# copying the source code made sense back when I was doing some wierd sed-ing
-ADD . ${APP_ROOT}/${APP_NAME}/source/
-# so after adding all files belong to the root, the USER ... setting has been ignored
-# see https://github.com/docker/docker/issues/6119
-# hence I need to chmod - this sucks
-USER root
-RUN chown ${APP_USER}:${APP_USER} -R ${APP_ROOT}/${APP_NAME}/source/
-
-USER ${APP_USER}
-WORKDIR ${APP_ROOT}/${APP_NAME}/source/
-RUN django-admin compilemessages
-
-RUN mv ${APP_ROOT}/node_modules ${APP_ROOT}/${APP_NAME}/source/audio_profiling/static
 
 
 EXPOSE 80
