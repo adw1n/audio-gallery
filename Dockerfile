@@ -61,7 +61,7 @@ RUN pip3 install -r ${APP_ROOT}/requirements.txt
 RUN rm ${APP_ROOT}/requirements.txt
 
 WORKDIR ${APP_ROOT}
-# TODO add package.json and install from it
+# TODO commit package.json and yarn.lock
 RUN yarn add chroma-js@1.2.2
 RUN yarn add enquire.js@2.1.5
 #wavesurfer 1.3.7 (newest version) is bugged - issue: https://github.com/katspaugh/wavesurfer.js/issues/1055
