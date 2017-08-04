@@ -52,7 +52,7 @@ class AudioListMixin:
         audio_pages_categories = []  # type: typing.List[AudioPageCategories]
         for audio_page in audio_pages:
             categories = []  # type: typing.List[typing.Union[CategoryAudioFileTuple,CategorySubcategoriesTuple]]
-            for category in audio_page.categories.all():
+            for category in audio_page.categories.all().order_by("name"):
                 if not category.parent_category and AudioFile.objects.filter(audio_page=audio_page,
                                                                              category=category).count():
                     categories.append(
@@ -62,7 +62,7 @@ class AudioListMixin:
                                                ))
                 else:
                     subcategories = []  # type: typing.List[CategoryAudioFileTuple]
-                    for subcategory in category.category_set.all():
+                    for subcategory in category.category_set.all().order_by("name"):
                         if AudioFile.objects.filter(audio_page=audio_page, category=subcategory).count():
                             subcategories.append(
                                 CategoryAudioFileTuple(subcategory,
