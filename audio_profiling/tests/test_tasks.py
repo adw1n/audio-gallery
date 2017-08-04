@@ -43,7 +43,8 @@ class AudioFileTasksTests(TestCase):
     def setUp(self):
         self.music_file = AudioFile.objects.create(title="some title")  # type: AudioFile
         self.wav_song_name = "sample_music.wav"  # type: str
-        self.wav_song_path = os.path.join(settings.MEDIA_ROOT, "files/songs/2017/01/02", self.wav_song_name)  # type: str
+        self.wav_song_full_path = os.path.join(settings.MEDIA_ROOT, "files/songs/2017/01/02", self.wav_song_name)  # type: str
+        self.wav_song_path = tasks.get_media_path(self.wav_song_full_path)
         self.music_file.audio_file.name = self.wav_song_path
         self.music_file.save()
         AudioFile.create_files = unittest.mock.MagicMock()
@@ -70,11 +71,13 @@ class AudioFileTasksTests(TestCase):
 
     @unittest.mock.patch('subprocess.call')
     def test_create_mp3(self, subprocess_call_mock: unittest.mock.MagicMock):
+        mp3_song_full_path = self.wav_song_full_path.replace("wav", "mp3")  # type: str
         mp3_song_path = self.wav_song_path.replace("wav", "mp3")  # type: str
         tasks.create_mp3(self.music_file.pk)
         self.music_file.refresh_from_db()
-        self.assertEqual(self.music_file.mp3.name, tasks.get_media_path(mp3_song_path))
-        subprocess_call_mock.assert_called_with("avconv -i %s -y %s" % (self.music_file.audio_file.path, mp3_song_path),
+        self.assertEqual(self.music_file.mp3.name, mp3_song_path)
+        self.assertEqual(self.music_file.mp3.path, os.path.normpath(mp3_song_full_path))
+        subprocess_call_mock.assert_called_with("avconv -i %s -y %s" % (self.music_file.audio_file.path, mp3_song_full_path),
                                                 shell=True)
 
     @unittest.mock.patch('subprocess.call')
