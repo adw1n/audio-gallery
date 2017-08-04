@@ -1,6 +1,4 @@
 FROM ubuntu:16.04
-# using ubuntu instead of python image, beacuse I had trouble with compiling
-# https://github.com/andrewrk/waveform.git on Debian (or maybe it was some random crashes, I don't remember)
 
 ENV APP_USER audio_stats
 ENV APP_ROOT /src
@@ -59,6 +57,7 @@ RUN pip3 install -r ${APP_ROOT}/requirements.txt
 RUN rm ${APP_ROOT}/requirements.txt
 
 WORKDIR ${APP_ROOT}
+USER ${APP_USER}
 # TODO commit package.json and yarn.lock
 RUN yarn add chroma-js@1.2.2
 RUN yarn add enquire.js@2.1.5
@@ -67,7 +66,6 @@ RUN yarn add wavesurfer.js@1.1.1
 RUN yarn add admin-lte@2.3.11
 
 
-EXPOSE 80
 USER root
 WORKDIR ${APP_ROOT}
 

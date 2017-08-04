@@ -21,9 +21,14 @@ if [ "$IS_WORKER" = true ] ; then
     su -s /bin/bash -c "celery -A audio_gallery purge -f" $APP_USER
     su -s /bin/bash -c "celery -A audio_gallery worker -l info --logfile $DJANGO_LOGS_DIR/celery.log" $APP_USER
 else
+    NODE_MODULES_DIR=$APP_ROOT/$APP_NAME/source/audio_profiling/static/node_modules
     # celery workers do not need node modules
     su -s /bin/bash -c "if [ -d \"$APP_ROOT/node_modules\" ]; then \
-        mv $APP_ROOT/node_modules $APP_ROOT/$APP_NAME/source/audio_profiling/static; fi" $APP_USER
+        if [ -d \"$NODE_MODULES_DIR\" ]; then \
+            rm -r $NODE_MODULES_DIR; \
+        fi; \
+        mv $APP_ROOT/node_modules $NODE_MODULES_DIR; \
+     fi" $APP_USER
 
     su -s /bin/bash -c "django-admin compilemessages" $APP_USER
 
