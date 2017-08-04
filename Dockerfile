@@ -37,8 +37,6 @@ RUN apt-get install -y python3-tk
 #otherwise this error is thrown: CommandError: Can't find msgfmt. Make sure you have GNU gettext tools 0.15 or newer installed.
 RUN apt-get install -y gettext
 
-#so basically npm is compleatly broken when using inside docker - see bug: https://github.com/npm/npm/issues/9863
-#therefore we go with yarn - install steps from https://yarnpkg.com/lang/en/docs/install/
 RUN apt-get install -y apt-transport-https #http://askubuntu.com/questions/165676/how-do-i-fix-a-e-the-method-driver-usr-lib-apt-methods-http-could-not-be-foun
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
