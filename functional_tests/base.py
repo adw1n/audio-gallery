@@ -9,6 +9,7 @@ import numpy
 import scipy.io.wavfile
 from pyvirtualdisplay import Display
 
+from audio_gallery import settings
 from audio_profiling import models, conf, tasks
 from django.test.utils import override_settings
 from audio_profiling.tests import audio_helpers
@@ -167,11 +168,45 @@ class FunctionalTest(StaticLiveServerTestCase):
     def get_spectrum_data(self) -> str:
         return self.browser.execute_script('return $("#canvas")[0].toDataURL()')
 
-    def check_page(self, audio: models.AudioFile):
-        # user sees the audio page with all the charts
+    def check_internalization(self, audio_page: models.AudioPage, language: str):
+        assert language in [language_code[0] for language_code in settings.LANGUAGES]
+
+        self.assertIn(getattr(audio_page, "name_"+language), self.browser.page_source)
+        self.assertIn(getattr(audio_page, "name_"+language), self.browser.page_source)
+
+        assertEn = getattr(self, "assert" + ("" if language == "en" else "Not") + "In")
+        assertEn("Instantaneous frequency spectrum of the sound (at the end-averaged)", self.browser.page_source)
+        assertEn("Changes of sound amplitude in time", self.browser.page_source)
+        assertEn("Aggregate image of frequency spectrum changes in time", self.browser.page_source)
+
+        assertPl = getattr(self, "assert" + ("Not" if language == "en" else "") + "In")
+        assertPl("Chwilowe spektrum częstotliwości dźwięku (na końcu - uśrednione)", self.browser.page_source)
+        assertPl("Zmiany amplitudy dźwięku w czasie", self.browser.page_source)
+        assertPl("Sumaryczny obraz zmian spektrum dźwięku w czasie", self.browser.page_source)
+
+    def check_spectrogram_loaded(self, audio: models.AudioFile):
+        self.assertTrue(
+            self.browser.execute_script(
+                'return $("#spectogram")[0].complete && $("#spectogram")[0].naturalWidth !== 0'
+            )
+        )
+        spectrogram_source = self.browser.execute_script('return $("#spectogram")[0].src')
+        self.assertEqual(spectrogram_source.split("/media/")[1], audio.spectrogram.name)
+
+    def check_audio_loaded(self, audio: models.AudioFile):
+        audio_sources = self.browser.execute_script('return $("audio source").toArray().map(source => source.src)')
+        self.assertEqual(len(audio_sources), 2)
+        self.assertEqual(audio_sources[0].split("/media/")[1], audio.audio_file.name)
+        self.assertEqual(audio_sources[1].split("/media/")[1], audio.mp3.name)
+
+    def check_page(self, audio_page: models.AudioPage, audio: models.AudioFile, language: str):
         AUDIO_LEN = self.browser.execute_script('return $("audio")[0].duration')
         self.assertGreater(AUDIO_LEN, 20)
         self.assertLess(AUDIO_LEN, 60)
+
+        self.check_audio_loaded(audio)
+        self.check_internalization(audio_page, language)
+        self.check_spectrogram_loaded(audio)
 
         SPECTRUM_AT_THE_BEGINNING = self.get_spectrum_data()
         self.check_timestamp_lines_in_sync(audio, AUDIO_LEN)
