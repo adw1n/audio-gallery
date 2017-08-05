@@ -1,6 +1,7 @@
 import os
 import unittest.mock
 import typing
+typing # silence pyflakes "'typing' imported but unused" error until pyflakes starts to support type hints in comments
 import operator
 from contextlib import contextmanager
 
