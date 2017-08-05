@@ -16,14 +16,10 @@ before_install:
   - sudo apt-get install -y python3-tk
   - npm install --prefix audio_profiling/static/ chroma-js@1.2.2 enquire.js@2.1.5 wavesurfer.js@1.1.1 admin-lte@2.3.11 \
                                                  sinon@2.1.0 qunit-phantomjs-runner@2.3.0 underscore@1.8.3
-
   - sudo apt-get install -y libav-tools # ffmpeg was removed in trusty
-
   - sudo apt-get install -y software-properties-common
   - sudo add-apt-repository ppa:andrewrk/libgroove -y # for missing libgroove-dev
   - sudo apt-get -qq update
-
-
   - sudo apt-get install -y memcached cython libav-tools git libgroove-dev libpng-dev zlib1g-dev make python3-tk gettext
   - git clone https://github.com/andrewrk/waveform.git
   - cd waveform && git checkout tags/2.0.0 && make && sudo ln -s $PWD/waveform /usr/local/bin/waveform && cd ..
@@ -38,6 +34,8 @@ install:
 script:
   - django-admin compilemessages
   - python manage.py test audio_profiling.tests
+  # python 3.5 might show warning 'Exception ignored in: <function WeakValueDictionary.__init__.<locals>.remove at ...'
+  # this is fine - https://github.com/celery/celery/issues/3818
   - python manage.py test functional_tests
   - pyflakes .
   - mypy --config-file mypy.ini .
