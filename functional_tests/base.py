@@ -7,6 +7,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
 import numpy
 import scipy.io.wavfile
+from pyvirtualdisplay import Display
 
 from audio_profiling import models, conf, tasks
 from django.test.utils import override_settings
@@ -73,6 +74,8 @@ class FunctionalTest(StaticLiveServerTestCase):
         shutil.rmtree(_TEST_MEDIA_ROOT)
 
     def setUp(self):
+        self.display = Display(visible=0, size=(800, 600))
+        self.display.start()
         self.browser = webdriver.Chrome()
         self._create_dummy_media_dir()
         self.files = generate_wav_files(self.AUDIO_FILES_DIR)
@@ -80,6 +83,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 
     def tearDown(self):
         self.browser.quit()
+        self.display.stop()
         self._clean_dummy_media_dir()
         super().tearDown()
 
