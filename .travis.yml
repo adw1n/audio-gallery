@@ -1,3 +1,4 @@
+dist: trusty
 language: python
 sudo: required
 services:
@@ -15,9 +16,10 @@ before_install:
   - sudo apt-get install python3-tk
   - npm install --prefix audio_profiling/static/ chroma-js@1.2.2 enquire.js@2.1.5 wavesurfer.js@1.1.1 admin-lte@2.3.11
                                                  sinon@2.1.0 qunit-phantomjs-runner@2.3.0 underscore@1.8.3
-  - sudo apt-get install -y cython libav-tools ffmpeg git libgroove-dev libpng-dev zlib1g-dev make python3-tk gettext
+  - sudo apt-get install -y memcached cython libav-tools ffmpeg git libgroove-dev libpng-dev zlib1g-dev make python3-tk gettext
   - git clone https://github.com/andrewrk/waveform.git
   - cd waveform && git checkout tags/2.0.0 && make && sudo ln -s $PWD/waveform /usr/local/bin/waveform && cd ..
+  - sudo apt-get install -y libxi6 libgconf-2-4 # for chromedriver
 install:
   - pip install -r requirements.txt
   - pip install -r test-requirements.txt
