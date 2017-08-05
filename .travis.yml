@@ -36,6 +36,7 @@ install:
   - unzip chromedriver_linux64.zip
   - sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
 script:
+  - django-admin compilemessages
   - python manage.py test audio_profiling.tests
   - python manage.py test functional_tests
   - pyflakes .
