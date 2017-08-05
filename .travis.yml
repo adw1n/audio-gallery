@@ -41,5 +41,5 @@ script:
   - python manage.py test functional_tests
   - pyflakes .
   - mypy --config-file mypy.ini .
-  - QT_QPA_PLATFORM=offscreen phantomjs audio_profiling/static/node_modules/qunit-phantomjs-runner/runner.js
-                                        audio_profiling/static/test.html
+  - phantomjs audio_profiling/static/node_modules/qunit-phantomjs-runner/runner.js
+              audio_profiling/static/test.html
