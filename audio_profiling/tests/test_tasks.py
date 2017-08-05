@@ -1,22 +1,19 @@
 import os
 import unittest.mock
 import typing
-import math
 import operator
 from contextlib import contextmanager
 
 import matplotlib #http://stackoverflow.com/questions/2801882/generating-a-png-with-matplotlib-when-display-is-undefined
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use("Agg")
-import numpy
-import pylab
 from django.test import TestCase
 from django.conf import settings
 
 from ..models import AudioFile
 from .. import tasks
 from .. import conf
-
+from . import audio_helpers
 
 @contextmanager
 def mock_generator(lock_id: str):
@@ -24,19 +21,7 @@ def mock_generator(lock_id: str):
 tasks.memcache_lock = mock_generator
 
 
-def generate_audio() -> numpy.array:
-    dtype = numpy.dtype("int16")
-    MAX_INT = pylab.np.iinfo(dtype.type).max
 
-    def silence(sample_rate: int =44100, duration_ms: int = 500) -> typing.List[int]:
-        return [0]*int(duration_ms * (sample_rate / 1000.0))
-
-    def sinewave(freq, sample_rate: int =44100, duration_ms: int = 500, volume: float = 1) -> typing.List[int]:
-        number_of_samples = duration_ms * (sample_rate / 1000.0)
-        return [volume * math.sin(2 * math.pi * freq * (x / sample_rate))*MAX_INT for x in range(int(number_of_samples))]
-
-    return numpy.array(sinewave(4000, volume=0.25) + silence() + sinewave(8000, volume=0.5) + silence()
-                       + sinewave(12000,volume=0.75), dtype=dtype)
 
 
 class AudioFileTasksTests(TestCase):
@@ -96,7 +81,7 @@ class AudioFileTasksTests(TestCase):
     @unittest.mock.patch('scipy.io.wavfile.read')
     def test_create_spectrum(self, scipy_io_wavfile_read_mock: unittest.mock.MagicMock,
                              json_dump_mock: unittest.mock.MagicMock):
-        sample_audio = generate_audio()
+        sample_audio = audio_helpers.generate_audio()
         sample_freq = 44100  # type: int
         scipy_io_wavfile_read_mock.return_value = (sample_freq, sample_audio)
         tasks.create_spectrum(self.music_file.pk)
@@ -123,7 +108,7 @@ class AudioFileTasksTests(TestCase):
     @unittest.mock.patch('audio_profiling.tasks.get_wav_info')
     def test_create_spectrogram(self, get_wav_info_mock: unittest.mock.MagicMock,
                                 pylab_savefig_mock: unittest.mock.MagicMock):
-        get_wav_info_mock.return_value = (generate_audio(), 44100)
+        get_wav_info_mock.return_value = (audio_helpers.generate_audio(), 44100)
         tasks.create_spectrogram(self.music_file.pk)
         self.music_file.refresh_from_db()
         spectrogram_path = os.path.join(self.music_file.spectrogram_upload_path, self.music_file._get_spectrogram_name())
