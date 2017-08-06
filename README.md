@@ -58,10 +58,6 @@ sudo docker-compose up -d
 ### Backups
 TODO document this. For now just copy `/opt/audio-gallery/media` and `/opt/audio-gallery/pgdata` directories and put it in a single tar/zip archive for each backup.
 
-### For developers:
-* project is using Django 1.10 until [django-modeltranslation](https://github.com/deschler/django-modeltranslation) starts to support Django 1.11
-* project is using python 3.5 until support for python 3.6 is added to [celery](https://github.com/celery/celery) and [django-modeltranslation](https://github.com/deschler/django-modeltranslation)
-
 ### License:
 This project uses the Unlicense license (see [LICENSE](LICENSE) file).  
-**BUT** all the music, graphics (logos, violin photos) etc. on the [demo page](http://violin-competition.adw1n.com/) are a **property of the rightful owners**.
+**BUT** all the music, graphics (logos, violin photos) etc. on the [demo page](http://violin-competition.adw1n.com/) are **not covered by the license** and belong to the rightful owners.

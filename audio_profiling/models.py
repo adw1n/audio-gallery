@@ -92,7 +92,7 @@ class AudioFile(models.Model):
             if self.audio_file != old.audio_file:
                 logger.info("audio file has changed")
                 file_changed = True
-        else:
+        elif self.audio_file:
             file_changed = True
         super().save(*args, **kwargs)
         if file_changed:
