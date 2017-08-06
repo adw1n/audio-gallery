@@ -89,6 +89,7 @@ class CasualBrowsingTest(FunctionalTest):
         self.browser.find_element_by_link_text(self.lvls[2].name_en)
         lvl_one_link = self.browser.find_element_by_link_text(self.lvls[0].name_en)
         lvl_one_link.click()
+        time.sleep(2)
 
 
         self.check_page(self.mario, self.lvl1_audio, "en")
@@ -107,12 +108,14 @@ class CasualBrowsingTest(FunctionalTest):
         self.check_page(self.mario, self.lvl3_audio, "pl")
 
         self.browser.find_element_by_link_text("EN").click()
+        time.sleep(2)
 
         # test the other audio page - different game
         self.browser.find_element_by_xpath("//a[span[text()='%s']]" % self.guild_wars.name_en).click()
         time.sleep(0.5)
         self.browser.find_element_by_link_text(self.elite_missions_themes.name_en).click()
         self.browser.find_element_by_link_text(self.fow_theme.name_en).click()
+        time.sleep(2)
 
         # test that the subcategory menu is opened and and current page is marked as active
         self.browser.find_element_by_link_text(self.fow_theme.name_en)
