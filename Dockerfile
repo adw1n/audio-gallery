@@ -34,6 +34,8 @@ RUN apt-get install -y python3-tk
 #gettext for django-admin compilemessages
 #otherwise this error is thrown: CommandError: Can't find msgfmt. Make sure you have GNU gettext tools 0.15 or newer installed.
 RUN apt-get install -y gettext
+# for checking other services availibility inside .docker-entrypoint.sh
+RUN apt-get install -y netcat-openbsd
 
 RUN apt-get install -y apt-transport-https #http://askubuntu.com/questions/165676/how-do-i-fix-a-e-the-method-driver-usr-lib-apt-methods-http-could-not-be-foun
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
