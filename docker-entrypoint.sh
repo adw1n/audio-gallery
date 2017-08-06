@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+
+while ! nc -z db 5432; do sleep 3; done
+echo "db is up"
+while ! nc -z memcached 11211; do sleep 3; done
+echo "memcached is up"
+while ! nc -z rabbitmq 5672; do sleep 3; done
+echo "rabbitmq is up"
+
+
 chown ${APP_USER}:${APP_USER} -R ${APP_ROOT}/${APP_NAME}/source/
 
 chown -R $APP_USER:$APP_USER /opt/audio-gallery/media
@@ -21,6 +30,7 @@ if [ "$IS_WORKER" = true ] ; then
     su -s /bin/bash -c "celery -A audio_gallery purge -f" $APP_USER
     su -s /bin/bash -c "celery -A audio_gallery worker -l info --logfile $DJANGO_LOGS_DIR/celery.log" $APP_USER
 else
+    sleep 60 # let the worker finish the makemigrations and migrate command
     NODE_MODULES_DIR=$APP_ROOT/$APP_NAME/source/audio_profiling/static/node_modules
     # celery workers do not need node modules
     su -s /bin/bash -c "if [ -d \"$APP_ROOT/node_modules\" ]; then \
