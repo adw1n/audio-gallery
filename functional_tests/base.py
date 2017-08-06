@@ -8,6 +8,8 @@ from selenium import webdriver
 import numpy
 import scipy.io.wavfile
 from pyvirtualdisplay import Display
+from PIL import Image, ImageDraw, ImageFont
+import textwrap
 
 from audio_gallery import settings
 from audio_profiling import models, conf, tasks
@@ -23,7 +25,7 @@ def generate_wav_files(dir_to_save_in: str) -> typing.List[str]:
     """
     generating open-source music...
     """
-    files = ["a.wav", "b.wav", "c.wav"]
+    files = ["a.wav", "b.wav", "c.wav", "d.wav"]
     files = [os.path.join(dir_to_save_in, file_name) for file_name in files]
     a_data=numpy.array(
         audio_helpers.sinewave(4000, volume=0.25, duration_ms=10000) +
@@ -54,18 +56,43 @@ def generate_wav_files(dir_to_save_in: str) -> typing.List[str]:
         dtype=audio_helpers.DTYPE)
     scipy.io.wavfile.write(files[2], 44100, c_data)
 
+    scipy.io.wavfile.write(files[3], 44100, c_data)
+
     return [tasks.get_media_path(file) for file in files]
+
+
+def generate_image(path: str) -> None:
+    IMG_WIDTH = 200
+    IMG_HEIGHT = 300
+    GREEN_FILL = (0, 255, 0)
+    img = Image.new('RGB', (IMG_WIDTH, IMG_HEIGHT))
+    d = ImageDraw.Draw(img)
+    font = ImageFont.load_default()
+    width, height = font.getsize('adw1n')
+    d.text(((IMG_WIDTH-width)/2, (IMG_HEIGHT-height)/2), 'adw1n', fill=GREEN_FILL, font=font)
+
+
+    binary = "1001001 1101110 100000 1101110 1110101 1101100 1101100 1110011 1100101 1100011 100000 1110111 1100101 100000 1110010 1101111 1101100 1101100 101110"
+    lines = textwrap.wrap(binary, 8)
+    for index, line in enumerate(lines):
+        width, _ = font.getsize(line)
+        text_x_pos = (IMG_WIDTH-10-width) if index % 2 else 10
+        text_y_pos = (index+2)//2*(IMG_HEIGHT/height)
+        d.text((text_x_pos, text_y_pos), line, fill=GREEN_FILL, font=font)
+    img.save(path)
 
 
 @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
 @override_settings(MEDIA_ROOT=_TEST_MEDIA_ROOT)
 class FunctionalTest(StaticLiveServerTestCase):
     AUDIO_FILES_DIR = os.path.join(_TEST_MEDIA_ROOT, "files/songs/2017/01/02")
+    IMAGES_DIR = os.path.join(_TEST_MEDIA_ROOT, "files/photos/2017/01/02")
 
     @classmethod
     def _create_dummy_media_dir(cls):
         os.makedirs(_TEST_MEDIA_ROOT)
         os.makedirs(cls.AUDIO_FILES_DIR)
+        os.makedirs(cls.IMAGES_DIR)
         os.makedirs(os.path.join(_TEST_MEDIA_ROOT, "waveforms"))
         os.makedirs(os.path.join(_TEST_MEDIA_ROOT, "spectrum"))
         os.makedirs(os.path.join(_TEST_MEDIA_ROOT, "spectrograms"))
@@ -80,6 +107,8 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.browser = webdriver.Chrome()
         self._create_dummy_media_dir()
         self.files = generate_wav_files(self.AUDIO_FILES_DIR)
+        self.photo = os.path.join(self.IMAGES_DIR, "photo.png")
+        generate_image(self.photo)
         super().setUp()
 
     def tearDown(self):
@@ -152,6 +181,16 @@ class FunctionalTest(StaticLiveServerTestCase):
             wave_timestamp.size['width'],
             delta=max(1, wave_timestamp.size['width'] * 0.1))
 
+    def check_audio_file_tasks_completed(self, audio: models.AudioFile):
+        self.assertIsNotNone(audio.waveform)
+        self.assertIsNotNone(audio.mp3)
+        self.assertIsNotNone(audio.spectrum)
+        self.assertIsNotNone(audio.spectrogram)
+        self.assertIsNotNone(audio.LEFT_IMG_MARGIN)
+        self.assertIsNotNone(audio.RIGHT_IMG_MARGIN)
+        self.assertIsNotNone(audio.TOP_IMG_MARGIN)
+        self.assertIsNotNone(audio.BOTTOM_IMG_MARGIN)
+
     def get_current_audio_time(self) -> float:
         return self.browser.execute_script('return $("audio")[0].currentTime')
 
@@ -184,14 +223,21 @@ class FunctionalTest(StaticLiveServerTestCase):
         assertPl("Zmiany amplitudy dźwięku w czasie", self.browser.page_source)
         assertPl("Sumaryczny obraz zmian spektrum dźwięku w czasie", self.browser.page_source)
 
-    def check_spectrogram_loaded(self, audio: models.AudioFile):
+    def check_img_loaded(self, id: str) -> None:
         self.assertTrue(
             self.browser.execute_script(
-                'return $("#spectogram")[0].complete && $("#spectogram")[0].naturalWidth !== 0'
+                'return $("#{0}")[0].complete && $("#{0}")[0].naturalWidth !== 0'.format(id)
             )
         )
+
+    def check_spectrogram_loaded(self, audio: models.AudioFile):
+        self.check_img_loaded("spectogram")
         spectrogram_source = self.browser.execute_script('return $("#spectogram")[0].src')
         self.assertEqual(spectrogram_source.split("/media/")[1], audio.spectrogram.name)
+
+    def check_audio_page_photo_loaded(self, audio_page: models.AudioPage) -> None:
+        if audio_page.photo:
+            self.check_img_loaded("violin-photo")
 
     def check_audio_loaded(self, audio: models.AudioFile):
         audio_sources = self.browser.execute_script('return $("audio source").toArray().map(source => source.src)')
@@ -204,6 +250,7 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.assertGreater(AUDIO_LEN, 20)
         self.assertLess(AUDIO_LEN, 60)
 
+        self.check_audio_page_photo_loaded(audio_page)
         self.check_audio_loaded(audio)
         self.check_internalization(audio_page, language)
         self.check_spectrogram_loaded(audio)
