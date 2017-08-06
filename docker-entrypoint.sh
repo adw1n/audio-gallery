@@ -5,8 +5,8 @@ while ! nc -z db 5432; do sleep 3; done
 echo "db is up"
 while ! nc -z memcached 11211; do sleep 3; done
 echo "memcached is up"
-while ! nc -z rabbitmq 5672; do sleep 3; done
-echo "rabbitmq is up"
+while ! nc -z rabbit 5672; do sleep 3; done
+echo "rabbit is up"
 
 
 chown ${APP_USER}:${APP_USER} -R ${APP_ROOT}/${APP_NAME}/source/
