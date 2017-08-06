@@ -38,7 +38,7 @@ sudo docker-compose up -d
 ```
 
 ### Customization / configuration
-* (**required**) **admin user password** - you **have to modify** this setting for **security reasons**  
+* (**required**) **admin user password** - you **have to modify** this setting for **security reasons** (otherwise if you make this app publicly available, anyone will be able to log in using the default credentials)  
   please change `ADMIN_USER_PASSWORD` in [.django_env](.django_env) file to whatever you like
 * (optional/recommended) `ALLOWED_HOSTS` setting in [.django_env](.django_env) file  
 * (optional) `ADMIN_MAIL` setting in [.django_env](.django_env) file
