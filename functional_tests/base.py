@@ -191,6 +191,24 @@ class FunctionalTest(StaticLiveServerTestCase):
         self.assertIsNotNone(audio.TOP_IMG_MARGIN)
         self.assertIsNotNone(audio.BOTTOM_IMG_MARGIN)
 
+    def get_spectrum_Db_value(self, frequency: int) -> int:
+        """
+        returns dB value from the chart
+        :param frequency: 0-22k Hz
+        """
+        CHART_LEFT_MARGIN = 35  # from musicfile_details.js
+        CHART_HEIGHT = 200 # from musicfile_details.js
+        CHART_WIDTH = 512
+        MAX_FREQ = (44100//2)
+        DB_RANGE = (0, -100)
+        x_pos = int(CHART_LEFT_MARGIN + (frequency/MAX_FREQ) * CHART_WIDTH)
+        for y_pos in range(0, CHART_HEIGHT):
+            data = self.browser.execute_script(
+                'return $("#canvas")[0].getContext("2d").getImageData({0},{1}, 1, 1).data'.format(x_pos, y_pos))
+            if data != [0,0,0,0]:
+                return int((y_pos/CHART_HEIGHT) * (DB_RANGE[1]-DB_RANGE[0]))
+        return DB_RANGE[1]
+
     def get_current_audio_time(self) -> float:
         return self.browser.execute_script('return $("audio")[0].currentTime')
 
@@ -201,8 +219,17 @@ class FunctionalTest(StaticLiveServerTestCase):
         return self.browser.execute_script('return $("#spectogram").width()')/conf.SPECTROGRAM_WIDTH
 
     def set_audio_position(self, audio_time: float) -> None:
-        self.browser.execute_script('$("audio")[0].currentTime=%s'%audio_time)
-        time.sleep(0.1)
+        # this won't work because seeking to certain time does not work with django development server
+        # self.browser.execute_script('$("audio")[0].currentTime=%s'%audio_time)
+        # time.sleep(0.1)
+        # to be able to do seeking we would have to use nginx for serving audio files
+
+        self.browser.execute_script('$("audio")[0].currentTime=0')
+        if audio_time:
+            # this is going to seriously slow down the tests
+            self.play_audio()
+            time.sleep(audio_time)
+            self.pause_audio()
 
     def get_spectrum_data(self) -> str:
         return self.browser.execute_script('return $("#canvas")[0].toDataURL()')
