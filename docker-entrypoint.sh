@@ -30,7 +30,7 @@ if [ "$IS_WORKER" = true ] ; then
     su -s /bin/bash -c "celery -A audio_gallery purge -f" $APP_USER
     su -s /bin/bash -c "celery -A audio_gallery worker -l info --logfile $DJANGO_LOGS_DIR/celery.log" $APP_USER
 else
-    sleep 60 # let the worker finish the makemigrations and migrate command
+    sleep 30 # let the worker finish the makemigrations and migrate command
     NODE_MODULES_DIR=$APP_ROOT/$APP_NAME/source/audio_profiling/static/node_modules
     # celery workers do not need node modules
     su -s /bin/bash -c "if [ -d \"$APP_ROOT/node_modules\" ]; then \
