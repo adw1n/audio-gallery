@@ -63,9 +63,12 @@ In case you need to edit some HTML, you might want to take a look at the comment
                           {% else %}
                             <li>
                               <a href="#">
-                                  <li class="treeview">
+{#                              TODO move the "active" and "menu-open" calculations to views, get rid of code duplication#}
+                                  <li class="treeview {% for subcategory_tuple in category_tuple.subcategories %}
+                          {%if subcategory_tuple.audio_file.pk == object.pk %}active{% endif %}{% endfor %}">
                                       <a href="#"> <span>{{category_tuple.category.name}}</span> <i class="fa fa-angle-left pull-right"></i></a>
-                                      <ul class="treeview-menu">
+                                      <ul class="treeview-menu {% for subcategory_tuple in category_tuple.subcategories %}
+                          {%if subcategory_tuple.audio_file.pk == object.pk %}menu-open{% endif %}{% endfor %}">
                                         {% for subcategory_tuple in category_tuple.subcategories %}
                                           <li {%if subcategory_tuple.audio_file.pk == object.pk %}class="active"{%endif%}><a href="{% url 'audio_profiling:audio_file_detail' pk=subcategory_tuple.audio_file.pk %}">{{subcategory_tuple.category.name}}</a></li>
                                         {% endfor %}
