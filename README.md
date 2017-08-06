@@ -30,6 +30,7 @@ cd audio-gallery
 # modify password (ADMIN_USER_PASSWORD) for your admin account in .django_env
 sudo docker-compose build  # this might take about 4 minutes
 sudo docker-compose up -d
+# give it a minute to get up
 # open your browser and go to http://SERVER_IP:8888
 # go to the admin panel http://SERVER_IP:8888/admin to set things up
 # and log in using credentials:
