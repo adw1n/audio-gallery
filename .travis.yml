@@ -31,8 +31,9 @@ install:
   - wget https://chromedriver.storage.googleapis.com/2.31/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip
   - sudo ln -s $PWD/chromedriver /usr/local/bin/chromedriver
-script:
+before_script:
   - django-admin compilemessages
+script:
   - python manage.py test audio_profiling.tests
   # python 3.5 might show warning 'Exception ignored in: <function WeakValueDictionary.__init__.<locals>.remove at ...'
   # this is fine - https://github.com/celery/celery/issues/3818
