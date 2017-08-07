@@ -24,12 +24,13 @@ Partial support - everything works, but the instantaneous spectrum is not refres
 ### DEPLOYMENT:
 You need to have `docker` and `docker-compose` installed. After you have installed them, run those commands:
 ```bash
-sudo mkdir -p /opt/audio-gallery/logs /opt/audio-gallery/static /opt/audio-gallery/media /opt/audio-gallery/database
+sudo mkdir -p /opt/audio-gallery/logs /opt/audio-gallery/static /opt/audio-gallery/media /opt/audio-gallery/pgdata
 git clone https://github.com/adw1n/audio-gallery
 cd audio-gallery
 # modify password (ADMIN_USER_PASSWORD) for your admin account in .django_env
 sudo docker-compose build  # this might take about 4 minutes
 sudo docker-compose up -d
+# give it a minute to get up
 # open your browser and go to http://SERVER_IP:8888
 # go to the admin panel http://SERVER_IP:8888/admin to set things up
 # and log in using credentials:
@@ -38,7 +39,7 @@ sudo docker-compose up -d
 ```
 
 ### Customization / configuration
-* (**required**) **admin user password** - you **have to modify** this setting for **security reasons**  
+* (**required**) **admin user password** - you **have to modify** this setting for **security reasons** (otherwise if you make this app publicly available, anyone will be able to log in using the default credentials)  
   please change `ADMIN_USER_PASSWORD` in [.django_env](.django_env) file to whatever you like
 * (optional/recommended) `ALLOWED_HOSTS` setting in [.django_env](.django_env) file  
 * (optional) `ADMIN_MAIL` setting in [.django_env](.django_env) file
@@ -56,12 +57,8 @@ sudo docker-compose up -d
   To remove support for polish language just remove if from `LANGUAGES` variable in [settings.py](audio_gallery/settings.py).
 
 ### Backups
-TODO document this. For now just copy `/opt/audio-gallery/media` and `/opt/audio-gallery/database` directories and put it in a single tar/zip archive for each backup.
-
-### For developers:
-* project is using Django 1.10 until [django-modeltranslation](https://github.com/deschler/django-modeltranslation) starts to support Django 1.11
-* project is using python 3.5 until support for python 3.6 is added to [celery](https://github.com/celery/celery) and [django-modeltranslation](https://github.com/deschler/django-modeltranslation)
+TODO document this. For now just copy `/opt/audio-gallery/media` and `/opt/audio-gallery/pgdata` directories and put it in a single tar/zip archive for each backup.
 
 ### License:
 This project uses the Unlicense license (see [LICENSE](LICENSE) file).  
-**BUT** all the music, graphics (logos, violin photos) etc. on the [demo page](http://violin-competition.adw1n.com/) are a **property of the rightful owners**.
+**BUT** all the music, graphics (logos, violin photos) etc. on the [demo page](http://violin-competition.adw1n.com/) are **not covered by the license** and belong to the rightful owners.

@@ -84,14 +84,16 @@ class AudioListMixinTests(ViewTestCase):
             ),
             views.AudioPageCategories(
                 audio_page=self.mario,
-                categories=[
+                categories=sorted([
                     views.CategoryAudioFileTuple(self.lvls[i], self.lvls_files[i]) for i in range(2)
                 ] + [
                     views.CategorySubcategoriesTuple(
                        self.lvls[2],
-                       [views.CategoryAudioFileTuple(self.lvls[i], self.lvls_files[i]) for i in range(3, len(self.lvls))]
+                       sorted(
+                           [views.CategoryAudioFileTuple(self.lvls[i], self.lvls_files[i]) for i in range(3, len(self.lvls))],
+                           key=lambda x: x.category.name)
                     )
-                ]
+                ], key=lambda x: x.category.name)
             )
         ]
         self.assertEqual(context["audio_pages_categories"], expected_audio_pages_categories)

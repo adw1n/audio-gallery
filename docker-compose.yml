@@ -1,26 +1,75 @@
 version: '2'
 services:
-  nginx:
-    image: nginx:latest
+  db:
     restart: always
-    container_name: nginx01
+    image: postgres:latest
+    volumes:
+      - /opt/audio-gallery/pgdata:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=audiogallery
+    expose:
+      - "5432"
+  memcached:
+    restart: always
+    image: memcached:latest
+    expose:
+      - "11211"
+  rabbit:
+    restart: always
+    image: rabbitmq:latest
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=password
+    expose:
+      - "5672"
+  nginx:
+    restart: always
+    image: nginx:latest
     ports:
       - "8888:8000"
-    volumes:
+    volumes: # TODO read-only
       - ./config/nginx:/etc/nginx/conf.d
       - /opt/audio-gallery/static:/opt/audio-gallery/static
       - /opt/audio-gallery/media:/opt/audio-gallery/media
     depends_on:
       - web
-  web:
+  worker:
     restart: always
     build: .
-    container_name: django01
     env_file: .django_env
+    # only one worker container is needed, because it automatically starts 2*n+1 processes (n - num of CPU cores)
+    container_name: audiogallery_worker
     volumes:
       - /opt/audio-gallery/static:/opt/audio-gallery/static
       - /opt/audio-gallery/media:/opt/audio-gallery/media
-      - /opt/audio-gallery/database:/opt/audio-gallery/database
       - /opt/audio-gallery/logs:/opt/audio-gallery/logs
+      - .:/src/audio-gallery/source
+    depends_on:
+      - db
+      - memcached
+      - rabbit
+    environment:
+      - IS_WORKER=true
+  web:
+    restart: always
+    build: .
+    env_file: .django_env
+    volumes: # same as worker's
+      - /opt/audio-gallery/static:/opt/audio-gallery/static
+      - /opt/audio-gallery/media:/opt/audio-gallery/media
+      - /opt/audio-gallery/logs:/opt/audio-gallery/logs
+      - .:/src/audio-gallery/source
     expose:
       - "8000"
+    depends_on:
+      - db
+      - memcached
+      - rabbit
+      - worker
+#    deploy:
+#      restart_policy:
+#        delay: 5s
+#        max_attempts: 3
+#        window: 90s

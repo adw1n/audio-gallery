@@ -116,15 +116,26 @@ WSGI_APPLICATION = 'audio_gallery.wsgi.application'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'LOCATION': os.environ.get('MEMCACHED_HOST', '127.0.0.1')+':11211',
     }
 }
+
+# RabbitMQ
+CELERY_BROKER_URL = 'amqp://{0}:{1}@{2}:5672//'.format(
+    os.environ.get('RABBIT_USER', 'guest'),
+    os.environ.get('RABBIT_PASSWORD', 'guest'),
+    os.environ.get('RABBIT_HOST', '127.0.0.1'))
+
 
 DATABASE_DIR=os.environ.get('DJANGO_DATABASE_DIR', os.path.join(BASE_DIR, '../database/'))
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(DATABASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'audiogallery',
+        'USER': os.environ.get('DB_USER', 'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'password'),
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+        'PORT': '5432',
     }
 }
 
@@ -221,6 +232,7 @@ STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(BASE_DIR, '../static'))
 
 MEDIA_URL='/media/'
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(BASE_DIR, '../media'))
+FILE_UPLOAD_PERMISSIONS = 0o644  # nginx was not able to read .wav files - those were being created with permissions 600
 
 # little heads up - if you are testing the app locally using the manage.py runserver command, you might experience some
 # problems with the audio that plays in your browser not being seekable - related stackoverflow thread:

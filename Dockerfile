@@ -1,6 +1,4 @@
 FROM ubuntu:16.04
-# using ubuntu instead of python image, beacuse I had trouble with compiling
-# https://github.com/andrewrk/waveform.git on Debian (or maybe it was some random crashes, I don't remember)
 
 ENV APP_USER audio_stats
 ENV APP_ROOT /src
@@ -36,12 +34,9 @@ RUN apt-get install -y python3-tk
 #gettext for django-admin compilemessages
 #otherwise this error is thrown: CommandError: Can't find msgfmt. Make sure you have GNU gettext tools 0.15 or newer installed.
 RUN apt-get install -y gettext
-#for celery
-RUN apt-get install -y rabbitmq-server
-RUN apt-get install -y memcached
+# for checking other services availibility inside .docker-entrypoint.sh
+RUN apt-get install -y netcat-openbsd
 
-#so basically npm is compleatly broken when using inside docker - see bug: https://github.com/npm/npm/issues/9863
-#therefore we go with yarn - install steps from https://yarnpkg.com/lang/en/docs/install/
 RUN apt-get install -y apt-transport-https #http://askubuntu.com/questions/165676/how-do-i-fix-a-e-the-method-driver-usr-lib-apt-methods-http-could-not-be-foun
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
@@ -58,37 +53,21 @@ RUN ln -s ${APP_ROOT}/waveform/waveform /usr/local/bin/waveform
 
 #install required python packages
 USER ${APP_USER}
-RUN mkdir -p ${APP_ROOT}/${APP_NAME}/source
 COPY requirements.txt ${APP_ROOT}/
 USER root
 RUN pip3 install -r ${APP_ROOT}/requirements.txt
-USER ${APP_USER}
 RUN rm ${APP_ROOT}/requirements.txt
 
 WORKDIR ${APP_ROOT}
+USER ${APP_USER}
+# TODO commit package.json and yarn.lock
 RUN yarn add chroma-js@1.2.2
 RUN yarn add enquire.js@2.1.5
 #wavesurfer 1.3.7 (newest version) is bugged - issue: https://github.com/katspaugh/wavesurfer.js/issues/1055
 RUN yarn add wavesurfer.js@1.1.1
 RUN yarn add admin-lte@2.3.11
 
-# TODO use volume instead
-# copying the source code made sense back when I was doing some wierd sed-ing
-ADD . ${APP_ROOT}/${APP_NAME}/source/
-# so after adding all files belong to the root, the USER ... setting has been ignored
-# see https://github.com/docker/docker/issues/6119
-# hence I need to chmod - this sucks
-USER root
-RUN chown ${APP_USER}:${APP_USER} -R ${APP_ROOT}/${APP_NAME}/source/
 
-USER ${APP_USER}
-WORKDIR ${APP_ROOT}/${APP_NAME}/source/
-RUN django-admin compilemessages
-
-RUN mv ${APP_ROOT}/node_modules ${APP_ROOT}/${APP_NAME}/source/audio_profiling/static
-
-
-EXPOSE 80
 USER root
 WORKDIR ${APP_ROOT}
 

@@ -1,7 +1,7 @@
 import os
 import logging
 
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
 
 
@@ -92,12 +92,12 @@ class AudioFile(models.Model):
             if self.audio_file != old.audio_file:
                 logger.info("audio file has changed")
                 file_changed = True
-        else:
+        elif self.audio_file:
             file_changed = True
         super().save(*args, **kwargs)
         if file_changed:
             # TODO self.clean_old_file()
-            self.create_files()
+            transaction.on_commit(self.create_files)
 
 
 class AudioPage(models.Model):
