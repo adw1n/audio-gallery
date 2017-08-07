@@ -45,5 +45,5 @@ else
     python3 manage.py collectstatic --noinput
 
     su -s /bin/bash -c "gunicorn audio_gallery.wsgi:application --name audio_gallery \
-    --bind 0.0.0.0:8000 --access-logfile $DJANGO_LOGS_DIR/access.log --error-logfile $DJANGO_LOGS_DIR/error.log" $APP_USER
+    --bind 0.0.0.0:8000 --timeout 120 --access-logfile $DJANGO_LOGS_DIR/access.log --error-logfile $DJANGO_LOGS_DIR/error.log" $APP_USER
 fi
