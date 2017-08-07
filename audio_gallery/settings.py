@@ -232,6 +232,7 @@ STATIC_ROOT = os.environ.get('STATIC_ROOT', os.path.join(BASE_DIR, '../static'))
 
 MEDIA_URL='/media/'
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(BASE_DIR, '../media'))
+FILE_UPLOAD_PERMISSIONS = 0o644  # nginx was not able to read .wav files - those were being created with permissions 600
 
 # little heads up - if you are testing the app locally using the manage.py runserver command, you might experience some
 # problems with the audio that plays in your browser not being seekable - related stackoverflow thread:
