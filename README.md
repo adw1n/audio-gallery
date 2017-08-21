@@ -2,16 +2,14 @@
 
 ### Live demo:  
 [http://violin-competition.adw1n.com/](http://violin-competition.adw1n.com/)  
-The demo is running a slightly older version of this project.
+This demo is running a slightly older version of the project.
 
 
 ### About
-As of right now you can only upload audio files that are:
+You can only upload audio files that are:
 * in a WAV file format
 * mono
 * 44100Hz
-
-Support for mp3 file format and arbitrary sampling frequency might be added in the future. As far as multiple channels go, I doubt it.
 
 ### Browser support
 Full support:
@@ -22,7 +20,7 @@ Partial support - everything works, but the instantaneous spectrum is not refres
 * the rest of the browsers
 
 ### DEPLOYMENT:
-You need to have `docker` and `docker-compose` installed. After you have installed them, run those commands:
+You need to have `docker` and `docker-compose` installed. After you have installed both, run those commands:
 ```bash
 sudo mkdir -p /opt/audio-gallery/logs /opt/audio-gallery/static /opt/audio-gallery/media /opt/audio-gallery/pgdata
 git clone https://github.com/adw1n/audio-gallery
@@ -35,12 +33,12 @@ sudo docker-compose up -d
 # go to the admin panel http://SERVER_IP:8888/admin to set things up
 # and log in using credentials:
 # user: admin
-# password: password that you have just set in the .django_env file
+# password: password from the .django_env file
 ```
 
 ### Customization / configuration
-* (**required**) **admin user password** - you **have to modify** this setting for **security reasons** (otherwise if you make this app publicly available, anyone will be able to log in using the default credentials)  
-  please change `ADMIN_USER_PASSWORD` in [.django_env](.django_env) file to whatever you like
+* (**required**) **admin user password** - you **have to modify** this setting for **security reasons** (otherwise if you make this app publicly available anyone will be able to log in using the default credentials)  
+  change `ADMIN_USER_PASSWORD` in [.django_env](.django_env)
 * (optional/recommended) `ALLOWED_HOSTS` setting in [.django_env](.django_env) file  
 * (optional) `ADMIN_MAIL` setting in [.django_env](.django_env) file
 * (optional) logos - place two JPGs in [audio_profiling/static/logos/](audio_profiling/static/logos/):
@@ -48,16 +46,16 @@ sudo docker-compose up -d
     * logo.jpg 122x50px
     * depending on your logos' background you might want to change css property of logo's background-color in [logo_settings.css](audio_profiling/static/logo_settings.css) file
 * (optional) internalization  
-  As of right now the project supports two languages:
+  Project supports two languages out of the box:
     * english
     * polish
 
-  To add support for another language, just modify `LANGUAGES` variable in [settings.py](audio_gallery/settings.py). After that, please generate a language file - run  `django-admin makemessages -l de` (where de is your locale name) ([relevant django docs page](https://docs.djangoproject.com/en/1.11/topics/i18n/translation/#message-files)). Add translations to the language file. Deploy the app and add missing translations using the admin panel (/admin).
+  To add support for another language modify `LANGUAGES` variable in [settings.py](audio_gallery/settings.py). After that generate a language file - run  `django-admin makemessages -l de` (where de is your locale name) ([relevant django docs page](https://docs.djangoproject.com/en/1.11/topics/i18n/translation/#message-files)). Add translations to the language file. Deploy the app and add missing translations using the admin panel (/admin).
   
   To remove support for polish language just remove if from `LANGUAGES` variable in [settings.py](audio_gallery/settings.py).
 
 ### Backups
-TODO document this. For now just copy `/opt/audio-gallery/media` and `/opt/audio-gallery/pgdata` directories and put it in a single tar/zip archive for each backup.
+Copy `/opt/audio-gallery/media` and `/opt/audio-gallery/pgdata` directories and put them in a single tar/zip archive for each backup.
 
 ### License:
 This project uses the Unlicense license (see [LICENSE](LICENSE) file).  

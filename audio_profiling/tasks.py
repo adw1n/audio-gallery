@@ -7,6 +7,7 @@ import wave
 import typing
 import subprocess
 import contextlib
+import time
 
 from celery import shared_task
 import matplotlib.figure
@@ -32,6 +33,19 @@ logger = celery.utils.log.get_task_logger(__name__)
 
 
 LOCK_EXPIRE = 60  # Lock expires in 1 minute
+
+
+def blocking_cache_add(lock_id: str, timeout: float = 10) -> bool:
+    start = monotonic()
+    while monotonic()-start < timeout:
+        status = cache.add(lock_id, "true", LOCK_EXPIRE)
+        if not status:
+            time.sleep(0.5)  # try again in 0.5 sec - maybe the lock got freed
+        else:
+            return status
+    return False
+
+
 @contextlib.contextmanager
 def memcache_lock(lock_id: str):
     """
@@ -40,12 +54,15 @@ def memcache_lock(lock_id: str):
     I removed the not needed oig.
     """
     logger.debug("in memcache_lock")
+    # we will try to delete the lock, unless only 3sec 'of life' are left
+    # in that case we will let it expire on it's own
     timeout_at = monotonic() + LOCK_EXPIRE - 3
-    status = cache.add(lock_id, "true", LOCK_EXPIRE)
+    status = blocking_cache_add(lock_id)
     try:
         yield status
     finally:
-        if monotonic() < timeout_at:
+        # cache.delete could be potentially expensive, so we are only going to call it if needed
+        if status and monotonic() < timeout_at:
             cache.delete(lock_id)
 
 

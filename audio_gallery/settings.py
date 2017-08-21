@@ -25,32 +25,6 @@ except ImportError:
     secret_key_file = os.path.join(SETTINGS_DIR, 'secret_key.py')
     SECRET_KEY=generate_secret_key(secret_key_file)
 
-    # I'd rather do
-    # generate_secret_key(secret_key_file)
-    # from .secret_key import SECRET_KEY
-    # than:
-    # SECRET_KEY=generate_secret_key(secret_key_file)
-    # but I'm randomly getting those errors:
-    # ImportError: No module named 'audio_gallery.secret_key'
-    # django.core.exceptions.ImproperlyConfigured: The SECRET_KEY setting must not be empty.
-    # or sometimes it works
-    # without docker it works reliably 100% of time
-    # I am confused, I'll investigate this some other time
-    # notes to myself in the future:
-    # docker-compose version 1.10.0, build 4bd6f1a
-    # Docker version 1.12.6, build 78d1802, host ubuntu 15.10
-    # ubuntu 16.04 Python 3.5.2 Django==1.10.6
-    # print(os.path.isfile(secret_key_file)) prints True
-    # with open(secret_key_file,"r") as file:
-    #     print(file.read())
-    # prints the secret file just fine
-    # time.sleep does not help
-    # secret_key_file.flush()
-    # os.fsync(secret_key_file.fileno()) does not help (obviously...)
-    # checked sys.modules - nothing weird there
-    # another weird thing is that if I run this code in try: ... except django.core.exceptions.ImproperlyConfigured:
-    # I can't seem to be able to catch the exception ImproperlyConfigured - TODO check why
-
 try:
     __debug_env_var = os.environ['DJANGO_DEBUG']
 except KeyError:
